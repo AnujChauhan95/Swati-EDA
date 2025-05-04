@@ -8,11 +8,12 @@ st.title("Call Center Data Dashboard")
 
 # Sidebar filters
 st.sidebar.header("Filter Options")
-uploaded_file = st.sidebar.file_uploader("CallCenterDataset1", type=["xlsx"])
+uploaded_file = st.sidebar.file_uploader("Upload Excel File", type=["xlsx"])
 
 if uploaded_file:
-    df = pd.read_excel(uploaded_file)
-    
+    # Explicitly specify the engine to avoid ImportError
+    df = pd.read_excel(uploaded_file, engine='openpyxl')
+
     # Preprocess
     df['CallDate'] = pd.to_datetime(df['StartCallDate'])
 
@@ -31,7 +32,6 @@ if uploaded_file:
     # Layout
     col1, col2 = st.columns(2)
 
-    # Average Satisfaction by Sector
     with col1:
         st.subheader("Average Call Satisfaction by Sector")
         avg_satisfaction_by_sector = df_filtered.groupby('Sector')['CallSatisfaction'].mean().reset_index()
@@ -40,14 +40,12 @@ if uploaded_file:
         ax1.set_ylim(0, 1)
         st.pyplot(fig1)
 
-    # Average Satisfaction per Operator
     with col2:
         st.subheader("Average Call Satisfaction per Operator")
         fig2, ax2 = plt.subplots(figsize=(8, 5))
         sns.barplot(data=df_filtered, x='OperatorID', y='CallSatisfaction', estimator='mean', ax=ax2)
         st.pyplot(fig2)
 
-    # Average Satisfaction by Location
     st.subheader("Average Call Satisfaction by Location")
     fig3, ax3 = plt.subplots(figsize=(12, 5))
     sns.barplot(data=df_filtered, x='LocationID', y='CallSatisfaction', ax=ax3)
@@ -55,7 +53,6 @@ if uploaded_file:
     ax3.set_xticklabels(ax3.get_xticklabels(), rotation=45)
     st.pyplot(fig3)
 
-    # Daily Call Volume
     st.subheader("Daily Call Volume")
     fig4, ax4 = plt.subplots(figsize=(12, 5))
     df_filtered.groupby('CallDate').size().plot(ax=ax4)
@@ -63,7 +60,6 @@ if uploaded_file:
     ax4.set_ylabel("Number of Calls")
     st.pyplot(fig4)
 
-    # Call Volume by Sector
     st.subheader("Total Calls by Sector")
     calls_by_sector = df_filtered.groupby('Sector').size().reset_index(name='TotalCalls')
     fig5, ax5 = plt.subplots(figsize=(8, 5))
