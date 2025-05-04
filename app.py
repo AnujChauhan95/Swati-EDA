@@ -6,13 +6,11 @@ import matplotlib.pyplot as plt
 st.set_page_config(layout="wide")
 st.title("Call Center Data Dashboard")
 
-# Sidebar filters
-st.sidebar.header("Filter Options")
-uploaded_file = st.sidebar.file_uploader("Upload Excel File", type=["xlsx"])
 
-if uploaded_file:
-    # Explicitly specify the engine to avoid ImportError
-    df = pd.read_excel(uploaded_file, engine='openpyxl')
+@st.cache_data
+def load_data():
+    df = pd.read_excel(CallCenterDataset1, engine='openpyxl')
+    
 
     # Preprocess
     df['CallDate'] = pd.to_datetime(df['StartCallDate'])
@@ -29,22 +27,21 @@ if uploaded_file:
         df['LocationID'].isin(locations)
     ]
 
-    # Layout
-    col1, col2 = st.columns(2)
 
-    with col1:
-        st.subheader("Average Call Satisfaction by Sector")
-        avg_satisfaction_by_sector = df_filtered.groupby('Sector')['CallSatisfaction'].mean().reset_index()
-        fig1, ax1 = plt.subplots(figsize=(8, 5))
-        sns.barplot(data=avg_satisfaction_by_sector, x='Sector', y='CallSatisfaction', palette='Set2', ax=ax1)
-        ax1.set_ylim(0, 1)
-        st.pyplot(fig1)
 
-    with col2:
-        st.subheader("Average Call Satisfaction per Operator")
-        fig2, ax2 = plt.subplots(figsize=(8, 5))
-        sns.barplot(data=df_filtered, x='OperatorID', y='CallSatisfaction', estimator='mean', ax=ax2)
-        st.pyplot(fig2)
+    
+    st.subheader("Average Call Satisfaction by Sector")
+    avg_satisfaction_by_sector = df_filtered.groupby('Sector')['CallSatisfaction'].mean().reset_index()
+    fig1, ax1 = plt.subplots(figsize=(8, 5))
+    sns.barplot(data=avg_satisfaction_by_sector, x='Sector', y='CallSatisfaction', palette='Set2', ax=ax1)
+    ax1.set_ylim(0, 1)
+    st.pyplot(fig1)
+
+   
+    st.subheader("Average Call Satisfaction per Operator")
+    fig2, ax2 = plt.subplots(figsize=(8, 5))
+    sns.barplot(data=df_filtered, x='OperatorID', y='CallSatisfaction', estimator='mean', ax=ax2)
+    st.pyplot(fig2)
 
     st.subheader("Average Call Satisfaction by Location")
     fig3, ax3 = plt.subplots(figsize=(12, 5))
@@ -66,5 +63,6 @@ if uploaded_file:
     sns.barplot(data=calls_by_sector, x='Sector', y='TotalCalls', palette='magma', ax=ax5)
     st.pyplot(fig5)
 
-else:
-    st.info("Please upload a Call Center Excel file to begin.")
+# Footer
+st.markdown("---")
+st.markdown("<p style='text-align: center;'>Made by Anuj Swati Sharma</p>", unsafe_allow_html=True)
