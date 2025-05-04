@@ -10,7 +10,8 @@ st.title("📞 Call Center EDA Dashboard")
 # Load data
 @st.cache_data
 def load_data():
-    return pd.read_excel("CallCenterDataset1.xlsx")
+    return pd.read_excel("CallCenterDataset1.xlsx", engine="openpyxl")
+
 
 df = load_data()
 
