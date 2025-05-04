@@ -8,7 +8,7 @@ st.title("Call Center Data Dashboard")
 
 # Sidebar filters
 st.sidebar.header("Filter Options")
-uploaded_file = st.sidebar.file_uploader("Upload Excel File", type=["xlsx"])
+uploaded_file = st.sidebar.file_uploader("CallCenterDataset1", type=["xlsx"])
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
