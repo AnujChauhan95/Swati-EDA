@@ -63,6 +63,6 @@ def load_data():
     sns.barplot(data=calls_by_sector, x='Sector', y='TotalCalls', palette='magma', ax=ax5)
     st.pyplot(fig5)
 
-# Footer
-st.markdown("---")
-st.markdown("<p style='text-align: center;'>Made by Anuj Swati Sharma</p>", unsafe_allow_html=True)
+    # Footer
+    st.markdown("---")
+    st.markdown("<p style='text-align: center;'>Made by Swati Sharma</p>", unsafe_allow_html=True)
